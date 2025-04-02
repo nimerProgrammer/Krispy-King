@@ -1,0 +1,96 @@
+
+
+            
+<HomeScreen>:
+    name: 'home'
+
+    MDNavigationLayout:
+        ScreenManager:
+            MDScreen:
+                BoxLayout:
+                    orientation: 'vertical'
+
+                    MDTopAppBar:
+                        id: top_bar
+                        title: "Home"
+                        elevation: 4
+                        md_bg_color: 0.82, 0.13, 0.17, 1
+
+                    MDBottomNavigation:
+                        id: bottom_nav
+
+                        MDBottomNavigationItem:
+                            name: 'home'
+                            text: 'Home'
+                            icon: 'home'
+                            on_tab_press: app.update_title("Home")
+
+                            ScrollView:
+                                MDBoxLayout:
+                                    orientation: 'vertical'
+                                    spacing: dp(10)
+                                    padding: dp(20)
+                                    adaptive_height: True
+                                    
+                                    MDLabel:
+                                        id: welcome_label
+                                        text: "Welcome!"
+                                        font_style: "H5"
+                                        halign: "center"
+                                        theme_text_color: "Custom"
+                                        text_color: 0, 0, 0, 1
+
+                                    
+
+                        MDBottomNavigationItem:
+                            name: 'profile'
+                            text: 'Profile'
+                            icon: 'account'
+                            on_tab_press: app.update_title("Home/profile")
+
+                            ScrollView:
+                                MDBoxLayout:
+                                    orientation: 'vertical'
+                                    padding: dp(20)
+                                    spacing: dp(20)
+                                    size_hint_y: None
+                                    height: self.minimum_height
+                                    pos_hint: {'center_x': 0.5}
+
+                                    MDCard:
+                                        size_hint: None, None
+                                        size: "300dp", "300dp"
+                                        pos_hint: {"center_x": 0.5}
+                                        elevation: 4
+                                        padding: dp(20)
+                                        MDBoxLayout:
+                                            orientation: "vertical"
+                                            spacing: dp(10)
+                                            halign: "center"
+                                            valign: "center"
+
+                                            MDIcon:
+                                                icon: "account"
+                                                pos_hint: {"center_x": 0.5}
+                                                theme_text_color: "Custom"
+                                                text_color: app.theme_cls.primary_color
+                                                font_size: "200sp"
+
+                                            MDLabel:
+                                                text: 'Nimer, Gerald M.'
+                                                halign: 'center'
+                                                theme_text_color: "Custom"
+                                                text_color: (0, 0, 0, 1)
+
+                                            MDLabel:
+                                                text: 'BSIT - 3B'
+                                                halign: 'center'
+                                                theme_text_color: "Custom"
+                                                text_color: (0, 0, 0, 1)
+
+                        MDBottomNavigationItem:
+                            name: 'logout'
+                            text: 'Logout'
+                            icon: 'logout'
+                            on_tab_press:
+                                app.logout()
