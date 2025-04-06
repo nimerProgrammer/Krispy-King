@@ -5,9 +5,12 @@ from kivymd.uix.snackbar import Snackbar
 from kivymd.uix.dialog import MDDialog
 from kivymd.uix.button import MDFlatButton
 
-c_Name = None
-c_user = None
-c_pass = None
+from script import insert_user
+
+Fullname = None
+Email = None
+Username = None
+Password = None
 
 
 class LoginScreen(Screen):
@@ -32,27 +35,70 @@ class MainApp(MDApp):
         
     def go_to_login(self):
         self.root.current = 'login'
-        
+
+
     def signup(self):
-        global c_Name 
-        global c_user 
-        global c_pass 
 
-        c_Name = self.root.get_screen('signup').ids.fullname.text
-        c_user = self.root.get_screen('signup').ids.username.text
-        c_pass = self.root.get_screen('signup').ids.password.text
+        global Fullname 
+        global Email 
+        global Username 
+        global Password 
 
-        self.root.current = 'login'
-        
+        Fullname = self.root.get_screen('signup').ids.fullname.text
+        Email = self.root.get_screen('signup').ids.email.text
+        Username = self.root.get_screen('signup').ids.username.text
+        Password = self.root.get_screen('signup').ids.password.text
+
+        success, message = insert_user(Fullname, Email, Username, Password)
+
+        if success:
+            
+            self.root.current = 'login'  # Navigate back to login screen
+            self.show_signup_success_dialog(message)
+        else:
+            self.show_signup_failed_dialog(message)
+
+
+    def show_signup_success_dialog(self, message):
+        if not hasattr(self, 'dialog'):
+            self.dialog = MDDialog(
+                title="Sign Up Successful",
+                text=message,
+                buttons=[
+                    MDFlatButton(
+                        text="CLOSE",
+                        on_release=lambda x: self.dialog.dismiss()
+                    ),
+                ],
+            )
+        self.dialog.open()
+
+
+    def show_signup_failed_dialog(self, message):
+        if not hasattr(self, 'dialog'):
+            self.dialog = MDDialog(
+                title="Sign Up Failed",
+                text=message,
+                buttons=[
+                    MDFlatButton(
+                        text="CLOSE",
+                        on_release=lambda x: self.dialog.dismiss()
+                    ),
+                ],
+            )
+        self.dialog.open()    
+
+
     def login(self):
+
         email = self.root.get_screen('login').ids.email.text
         password = self.root.get_screen('login').ids.password.text
 
-        if email == c_user and password == c_pass:  # Missing colon added
+        if email == Username and password == Password:  # Missing colon added
             self.root.current = 'home'
             self.update_title("Home")
             welcome_label = self.root.get_screen('home').ids.welcome_label
-            welcome_label.text = f"Welcome, {c_Name}!"  # Set the full name here
+            welcome_label.text = f"Welcome, {Fullname}!"  # Set the full name here
     
             self.reset_tab()
         else:
