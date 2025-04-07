@@ -20,13 +20,40 @@ def connection():
         return None
 
 
+def login_user(username, password):
+    conn = connection()
+    if conn:
+        try:
+            cursor = conn.cursor()
+            query = "SELECT password FROM users WHERE username = %s"
+            cursor.execute(query, (username,))
+            result = cursor.fetchone()
+
+            if result:
+                stored_password = result[0].encode('utf-8') if isinstance(result[0], str) else result[0]
+                if bcrypt.checkpw(password.encode('utf-8'), stored_password):
+                    return True, "Login successful!"
+                else:
+                    return False, "Incorrect password."
+            else:
+                return False, "Username not found."
+
+        except Error as e:
+            print(f"Error: {e}")
+            return False, "Login failed."
+        finally:
+            cursor.close()
+            conn.close()
+    else:
+        return False, "Database connection failed."
+    
+
 # Hash password function
 def hash_password(password):
     # Salt the password and hash it
     salt = bcrypt.gensalt()
     hashed_password = bcrypt.hashpw(password.encode('utf-8'), salt)
     return hashed_password
-
 
 
 # Insert user function
