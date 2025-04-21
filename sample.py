@@ -1,6 +1,6 @@
 
 import mysql.connector
-import bcrypt
+import hashlib
 from datetime import datetime
 from mysql.connector import Error
 
@@ -35,9 +35,10 @@ def login_user(username, password):
 
             if result:
                 user_id, stored_password = result[0], result[1]
-                stored_password = stored_password.encode('utf-8') if isinstance(stored_password, str) else stored_password
-                # stored_password = result[0].encode('utf-8') if isinstance(result[0], str) else result[0]
-                if bcrypt.checkpw(password.encode('utf-8'), stored_password):
+                # Hash the entered password using hashlib and compare with the stored one
+                input_hashed = hash_password(password)
+
+                if input_hashed == stored_password:
                     log_status = "Login successful"
                     cursor.execute(
                         "INSERT INTO logs (status, datetime, userid) VALUES (%s, %s, %s)",
@@ -60,11 +61,11 @@ def login_user(username, password):
         return False, "Database connection failed."
     
 
-# Hash password function
+# Hash password function using hashlib
 def hash_password(password):
-    # Salt the password and hash it
-    salt = bcrypt.gensalt()
-    hashed_password = bcrypt.hashpw(password.encode('utf-8'), salt)
+    # Use SHA-256 hashing algorithm
+    hash_object = hashlib.sha256(password.encode('utf-8'))
+    hashed_password = hash_object.hexdigest()
     return hashed_password
 
 
